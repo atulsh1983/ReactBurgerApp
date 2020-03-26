@@ -1,26 +1,104 @@
-import React from 'react';
-import logo from './logo.svg';
+import React,{Component} from 'react';
 import './App.css';
+import Person from  './Person/Person';
 
-function App() {
-  return (
+class App extends Component {
+  state = {
+    persons:[
+      {id:"ab",name:"qwe", age:23},
+      {id:"cd",name:"asd",age:24},
+      {id:"ef",name:"zxc",age:29}
+    ],
+    showPersons: false
+  };
+
+  
+  nameChangeHandler = (event,id) =>{
+
+    const personIndex = this.state.persons.findIndex(p =>{
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    }
+
+
+    person.name = event.target.value;
+
+   // console.log(person);
+
+    const persons = [...this.state.persons];
+
+    persons[personIndex] = person;
+
+
+
+
+
+    this.setState({
+      persons:persons
+    })
+  }
+
+  deletePersonHandler= (personIndex)=>{
+    const persons = [...this.state.persons];
+    persons.splice(personIndex,1);
+    this.setState({
+      persons: persons
+    })
+  }
+
+  toggelPersonHandler=()=>{
+    const doesShow = this.state.showPersons;
+    this.setState({
+      showPersons: !doesShow
+    })
+  }
+
+
+  render(){
+    const style = {
+      backgroundColor: 'green',
+      color: 'white',
+      font: 'inherit',
+      border: '1px solid #000',
+      padding: '8px',
+      cursor: 'pointer'
+    }
+
+    let pesrons= null;
+
+    if(this.state.showPersons){
+        pesrons= <div>
+        {
+            this.state.persons.map((person,index)=>{
+            return <Person 
+                      name={person.name} 
+                      age={person.age}
+                      click={()=>this.deletePersonHandler(index)}
+                      key={person.id}
+                      changed={(event)=>this.nameChangeHandler(event,person.id)}/>
+          })
+        }
+        </div>;
+
+       
+
+    }
+
+    return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <h1>Example set for</h1>
+      <p> It's working</p>
+      <button style={style} onClick={this.toggelPersonHandler}>Toggle</button>
+      {pesrons}
+    </div>  
+
+  
   );
+  }
+  
 }
 
 export default App;
